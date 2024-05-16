@@ -42,8 +42,9 @@ const getProductSorts = async (req: Request, res: Response) => {
   });
 };
 const getProductById = async (req: Request, res: Response) => {
+  let product: any = {};
   try {
-    const product = await prisma.product.findUnique({
+    product = await prisma.product.findUnique({
       where: {
         id: req.params.id,
       },
@@ -63,6 +64,11 @@ const getProductById = async (req: Request, res: Response) => {
         },
       },
     });
+
+    if (product.productDiscount != null) {
+      product["discountedPrice"] =
+        (product.price * (100 - product.productDiscount.percentage)) / 100;
+    }
 
     // if (product == null) {
     // }

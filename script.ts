@@ -8,6 +8,19 @@ import savedProducts from "./routes/savedProductsRoutes";
 
 // import PostRouter from "./routes/blog.route";
 
+// export const prisma = new PrismaClient().$extends({
+//   result: {
+//     product: {
+//       discountedPrice: {
+//         needs: { price: true },
+//         compute(product) {
+//           return product.price * 0.7;
+//         },
+//       },
+//     },
+//   },
+// });
+
 export const prisma = new PrismaClient();
 
 // import app from "./app";
