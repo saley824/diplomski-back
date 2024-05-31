@@ -28,6 +28,7 @@ model User {
   username      String          @unique
   password      String
   SavedProducts SavedProducts[]
+  Cart          Cart[]
 }
 
 model UserAddress {
@@ -51,6 +52,7 @@ model Product {
   ProductPriceHistory ProductPriceHistory[]
   productDiscount     ProductDiscount?
   SavedProducts       SavedProducts[]
+  Cart                Cart[]
 }
 
 model SavedProducts {
@@ -85,4 +87,16 @@ model Category {
   superCategoryId String?
   SubCategories   Category[] @relation("SubCategories")
   Product         Product[]
+}
+
+// info potrebne za CART
+
+model Cart {
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+  quantity  Int
+
+  @@id([productId, userId])
 }
