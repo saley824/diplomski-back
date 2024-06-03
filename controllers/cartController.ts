@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
 
 import { prisma } from "../script";
+import globalHelper from "../helpers/global_helper";
 
 const getCart = async (req: Request, res: Response) => {
   const userId = req.params.userId;
-
-  console.log(userId);
 
   try {
     const cartItems = await prisma.cart.findMany({
@@ -13,11 +12,70 @@ const getCart = async (req: Request, res: Response) => {
         userId,
       },
     });
+
+    const cartItemsDetails: {
+      name: string;
+      productId: string;
+      quantity: number;
+      price: number;
+      cartItemTotalPrice: number;
+      discountedPrice: number | null;
+    }[] = [];
+    let totalPrice: number = 0;
+    let cartItemTotalPrice: number = 0;
+    for (let index = 0; index < cartItems.length; index++) {
+      const item = cartItems[index];
+      const product = await prisma.product.findUnique({
+        where: {
+          id: item.productId,
+        },
+        select: {
+          price: true,
+          name: true,
+          productDiscount: {
+            select: {
+              percentage: true,
+              from: true,
+              to: true,
+            },
+          },
+        },
+      });
+      if (product != null) {
+        let discountedPrice: number | null =
+          product.productDiscount != null
+            ? globalHelper.calculateDiscount(
+                product.price,
+                product.productDiscount.percentage
+              )
+            : null;
+        if (discountedPrice != null) {
+          cartItemTotalPrice += discountedPrice * item.quantity;
+        } else {
+          cartItemTotalPrice += product.price * item.quantity;
+        }
+
+        cartItemsDetails.push({
+          name: product.name,
+          productId: item.userId,
+          quantity: item.quantity,
+          price: product?.price,
+          discountedPrice: discountedPrice,
+          cartItemTotalPrice,
+        });
+
+        totalPrice += cartItemTotalPrice;
+        cartItemTotalPrice = 0;
+      }
+    }
+
     res.status(200).json({
       status: "success",
-      count: cartItems.length,
+      count: cartItemsDetails.length,
+      totalPrice,
+
       data: {
-        cartItems,
+        cartItemsDetails,
       },
     });
   } catch (error) {
@@ -97,8 +155,25 @@ const incrementCartItemQuantity = async (req: Request, res: Response) => {
   });
 
   if (currentCartItem != null && product != null) {
-    if (currentCartItem.quantity > product?.totalAmount) {
+    // if current total amount is 0, and we have product in cart we delete it on try to increment or decrement
+    if (product.totalAmount == 0) {
+      await prisma.cart.delete({
+        where: {
+          productId_userId: {
+            productId: productId,
+            userId: userId,
+          },
+        },
+      });
+
+      res.status(400).json({
+        message:
+          "There is no anymore this product on stock. It removed from cart",
+        status: "fail",
+      });
+      return;
     }
+
     if (currentCartItem.quantity == 1 && isIncrement != "true") {
       // case when quantity is 0 and we try to decrement quantity
       res.status(400).json({
@@ -115,6 +190,27 @@ const incrementCartItemQuantity = async (req: Request, res: Response) => {
     ) {
       res.status(400).json({
         message: "There arent enough",
+        status: "fail",
+      });
+      return;
+    }
+
+    // case when quantity is greater than total amount. In this case we set quantity on the greatest possible value
+    if (currentCartItem.quantity > product?.totalAmount) {
+      await prisma.cart.update({
+        where: {
+          productId_userId: {
+            productId: productId,
+            userId: userId,
+          },
+        },
+        data: {
+          quantity: product?.totalAmount,
+        },
+      });
+      res.status(400).json({
+        message:
+          "There is not enough amount. Quantity is set to current availability",
         status: "fail",
       });
       return;

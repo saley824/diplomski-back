@@ -24,7 +24,6 @@ export const productSchemaCreate = object({
 });
 export const productSchemaUpdate = object({
   body: object({
-    categoryId: string().uuid().required(),
     name: string().required(),
     description: string().min(12).required(),
     price: number().required(),
@@ -59,9 +58,23 @@ export const productSortsSchema = object({
   }),
 });
 
+export const productSchema = object({
+  body: object({
+    id: string().uuid().required(),
+    categoryId: string().uuid().required(),
+    name: string().required(),
+    description: string().min(12).required(),
+    price: number().required(),
+    totalAmount: number().integer().required(),
+    unit: string().oneOf([Unit.KG, Unit.LITER, Unit.PIECE]).required(),
+    quantity: number(),
+  }),
+});
+
 export type productSchemaCreateDto = InferType<
   typeof productSchemaCreate
 >["body"];
+export type productSchemaDto = InferType<typeof productSchema>["body"];
 export type productSchemaUpdateDto = InferType<
   typeof productSchemaUpdate
 >["body"];
