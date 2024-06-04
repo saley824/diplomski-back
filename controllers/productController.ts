@@ -88,7 +88,6 @@ const getProductById = async (req: Request, res: Response) => {
 
 const getAllProducts = async (req: Request, res: Response) => {
   let sort: any = {};
-  let price: any = {};
   let filterObject: any = {};
   filterObject = req.query;
 
@@ -152,8 +151,14 @@ const getAllProducts = async (req: Request, res: Response) => {
           : {},
         price: filterObject.price
           ? {
-              gte: Number(filterObject.price.gte),
-              lte: Number(filterObject.price.lte),
+              gte:
+                filterObject.price.gte != null
+                  ? Number(filterObject.price.gte)
+                  : undefined,
+              lte:
+                filterObject.price.lte != null
+                  ? Number(filterObject.price.lte)
+                  : undefined,
             }
           : {},
       },

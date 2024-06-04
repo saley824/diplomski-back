@@ -6,6 +6,7 @@ import productDiscountRouter from "./routes/productDiscountRoutes";
 import userRouter from "./routes/userRoutes";
 import savedProducts from "./routes/savedProductsRoutes";
 import cartRouter from "./routes/cartRoutes";
+import orderRouter from "./routes/orderRoutes";
 
 // import PostRouter from "./routes/blog.route";
 
@@ -39,6 +40,7 @@ async function main() {
   app.use("/api/v1/users", userRouter);
   app.use("/api/v1/saved_products", savedProducts);
   app.use("/api/v1/cart", cartRouter);
+  app.use("/api/v1/orders", orderRouter);
   // app.use(express.json());
 
   app.all("*", (req: Request, res: Response) => {
