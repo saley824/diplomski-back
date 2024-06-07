@@ -24,6 +24,7 @@ enum OrderStatus {
   NEW
   SENT
   FINISHED
+  REJECTED
 }
 
 model User {
@@ -114,6 +115,7 @@ model Order {
   createdAt    DateTime    @default(now())
   sentTime     DateTime?
   finishedTime DateTime?
+  rejectedTime DateTime?
   user         User        @relation(fields: [userId], references: [id])
   userId       String
   totalPrice   Float

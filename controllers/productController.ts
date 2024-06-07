@@ -6,6 +6,8 @@ import {
   ProductSortsSchemaDto,
 } from "../validation/product-schema";
 
+import productService from "../services/productService";
+
 //TODO maybe use middleware to check is there discount for some product
 
 // const checkDiscount = async (req: Request, res: Response, next: any) => {};
@@ -89,91 +91,38 @@ const getProductById = async (req: Request, res: Response) => {
 const getAllProducts = async (req: Request, res: Response) => {
   let sort: any = {};
   let filterObject: any = {};
+
   filterObject = req.query;
 
-  console.log(filterObject);
   // --------------SORT-------------------------------
   if (filterObject.sortBy && filterObject.orderBy) {
     let sortBy: string = filterObject.sortBy?.toString();
     let orderBy: string = filterObject.orderBy?.toString();
     sort[sortBy] = orderBy;
   }
-  //---------------FILTER--------------------------
 
-  let hasDiscountFilter: boolean = false;
-  let categoryId: string | null = null;
-  let superCategoryId: string | null = null;
-  let searchTerm: string | null = null;
-
-  if (filterObject.hasDiscount == "true") {
-    hasDiscountFilter = true;
+  let page: number = 1;
+  let perPage: number = 100;
+  if (filterObject.page && filterObject.perPage) {
+    page = filterObject.page * 1;
+    perPage = filterObject.perPage * 1;
+  } else {
+    res.status(404).json({
+      message: "dje ti je paginacija",
+      status: "fail",
+    });
   }
-  if (filterObject.categoryId) {
-    categoryId = filterObject.categoryId.toString();
-  }
-  if (filterObject.superCategoryId) {
-    superCategoryId = filterObject.superCategoryId.toString();
-  }
-  if (filterObject.searchTerm) {
-    searchTerm = filterObject.searchTerm.toString();
-  }
-
-  const categories = await prisma.category.findMany({
-    where: {
-      superCategoryId: superCategoryId,
-    },
-    select: {
-      id: true,
-    },
-  });
-
-  const categoryIds = categories.map((e) => e.id);
 
   try {
-    const products = await prisma.product.findMany({
-      where: {
-        name: searchTerm
-          ? {
-              startsWith: searchTerm,
-              mode: "insensitive",
-            }
-          : {},
-
-        NOT: hasDiscountFilter
-          ? {
-              productDiscount: null,
-            }
-          : {},
-        categoryId: categoryId
-          ? categoryId
-          : superCategoryId
-          ? { in: categoryIds }
-          : {},
-        price: filterObject.price
-          ? {
-              gte:
-                filterObject.price.gte != null
-                  ? Number(filterObject.price.gte)
-                  : undefined,
-              lte:
-                filterObject.price.lte != null
-                  ? Number(filterObject.price.lte)
-                  : undefined,
-            }
-          : {},
-      },
-      include: {
-        productDiscount: {
-          select: {
-            percentage: true,
-            from: true,
-            to: true,
-          },
-        },
-      },
-      orderBy: sort,
+    const { hasNext, products } = await productService.getProductsByFilters({
+      filterObject: filterObject,
+      sort: sort,
+      page: page,
+      perPage: perPage,
     });
+
     res.status(200).json({
+      hasNext: hasNext,
       status: "success",
       count: products.length,
       data: {

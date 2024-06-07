@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
+import { OrderStatus } from "@prisma/client";
 
 import { prisma } from "../script";
 import globalHelper from "../helpers/global_helper";
 import cartService from "../services/cartService";
+import { changeOrderStatusDto, orderDto } from "../validation/order-schema";
 import { date } from "yup";
 
 const makeOrder = async (req: Request, res: Response) => {
@@ -79,11 +81,13 @@ const makeOrder = async (req: Request, res: Response) => {
 };
 
 const getOrders = async (req: Request, res: Response) => {
-  const { userId } = req.params;
+  const body = req.body as orderDto;
+
   try {
     const order = await prisma.order.findMany({
       where: {
-        userId: userId,
+        userId: body.userId,
+        status: body.orderStatus,
       },
     });
     res.status(200).json({
@@ -99,8 +103,53 @@ const getOrders = async (req: Request, res: Response) => {
     });
   }
 };
+const changeOrderStatus = async (req: Request, res: Response) => {
+  const changeOrderStatus = req.body as changeOrderStatusDto;
 
+  try {
+    if (changeOrderStatus.orderStatus == "SENT") {
+    }
+    const oldOrder = await prisma.order.findFirst({
+      where: {
+        id: changeOrderStatus.orderId,
+      },
+    });
+    const changedOrder = await prisma.order.update({
+      where: {
+        id: changeOrderStatus.orderId,
+      },
+      data: {
+        status: changeOrderStatus.orderStatus,
+        sentTime:
+          changeOrderStatus.orderStatus == "SENT"
+            ? new Date()
+            : oldOrder?.sentTime,
+        finishedTime:
+          changeOrderStatus.orderStatus == "FINISHED"
+            ? new Date()
+            : oldOrder?.finishedTime,
+        rejectedTime:
+          changeOrderStatus.orderStatus == "REJECTED"
+            ? new Date()
+            : oldOrder?.rejectedTime,
+      },
+    });
+    res.status(200).json({
+      status: "success",
+      message: "Status is successfully changed",
+      data: {
+        changedOrder,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      status: "fail",
+    });
+  }
+};
 export default {
   makeOrder,
   getOrders,
+  changeOrderStatus,
 };

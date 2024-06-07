@@ -1,4 +1,6 @@
 import { ProductDiscount } from "@prisma/client";
+import { prisma } from "../script";
+import { boolean } from "yup";
 
 //TODO
 const checkIfProductHasDiscount = (
@@ -23,7 +25,101 @@ const sort = (sort: string, orderBy: string) => {
     };
 };
 
+function applyDiscount(price: number, discount: number = 0.05): number {
+  return price * (1 - discount);
+}
+
+// const test = async (options: { searchTerm: string \\ }) => {};
+const getProductsByFilters = async (options: {
+  filterObject: any;
+  sort: any;
+  page: number;
+  perPage: number;
+}) => {
+  const { filterObject, sort, page, perPage } = options;
+
+  let hasDiscountFilter: boolean = false;
+  let categoryId: string | null = null;
+  let superCategoryId: string | null = null;
+  let searchTerm: string | null = null;
+  // let page: number;
+  // let perPage: number;
+
+  if (filterObject.categoryId) {
+    categoryId = filterObject.categoryId.toString();
+  }
+  if (filterObject.superCategoryId) {
+    superCategoryId = filterObject.superCategoryId.toString();
+  }
+  if (filterObject.searchTerm) {
+    searchTerm = filterObject.searchTerm.toString();
+  }
+  const categories = await prisma.category.findMany({
+    where: {
+      superCategoryId: superCategoryId,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  const skip = (page - 1) * perPage;
+
+  const categoryIds = categories.map((e) => e.id);
+  const products = await prisma.product.findMany({
+    skip: skip,
+    take: perPage + 1,
+    where: {
+      name: searchTerm
+        ? {
+            contains: searchTerm,
+            mode: "insensitive",
+          }
+        : {},
+
+      NOT: hasDiscountFilter
+        ? {
+            productDiscount: null,
+          }
+        : {},
+      categoryId: categoryId
+        ? categoryId
+        : superCategoryId
+        ? { in: categoryIds }
+        : {},
+      price: filterObject.price
+        ? {
+            gte:
+              filterObject.price.gte != null
+                ? Number(filterObject.price.gte)
+                : undefined,
+            lte:
+              filterObject.price.lte != null
+                ? Number(filterObject.price.lte)
+                : undefined,
+          }
+        : {},
+    },
+    include: {
+      productDiscount: {
+        select: {
+          percentage: true,
+          from: true,
+          to: true,
+        },
+      },
+    },
+    orderBy: sort,
+  });
+  let hasNext: boolean = products.length > perPage;
+  if (hasNext) {
+    products.pop();
+  }
+  return { hasNext, products };
+};
+
 export default {
   checkIfProductHasDiscount,
   sort,
+  getProductsByFilters,
 };
