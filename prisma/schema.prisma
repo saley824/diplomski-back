@@ -37,6 +37,8 @@ model User {
   SavedProducts SavedProducts[]
   Cart          Cart[]
   Order         Order[]
+
+  Reviews Review[]
 }
 
 model UserAddress {
@@ -63,6 +65,7 @@ model Product {
   Cart                Cart[]
   OrderItem           OrderItem[]
   image               String?
+  Reviews             Review[]
 }
 
 model SavedProducts {
@@ -133,4 +136,15 @@ model OrderItem {
   name      String
   order     Order   @relation(fields: [orderId], references: [id])
   orderId   String
+}
+
+model Review {
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+  rating    Int
+  comment   String?
+
+  @@id([productId, userId])
 }

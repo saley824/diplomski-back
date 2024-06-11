@@ -8,6 +8,7 @@ import savedProducts from "./routes/savedProductsRoutes";
 import cartRouter from "./routes/cartRoutes";
 import orderRouter from "./routes/orderRoutes";
 import homeRouter from "./routes/homeRoute";
+import reviewRouter from "./routes/reviewRoutes";
 
 // import PostRouter from "./routes/blog.route";
 
@@ -43,6 +44,7 @@ async function main() {
   app.use("/api/v1/cart", cartRouter);
   app.use("/api/v1/orders", orderRouter);
   app.use("/api/v1/home", homeRouter);
+  app.use("/api/v1/reviews", reviewRouter);
   // app.use(express.json());
 
   app.all("*", (req: Request, res: Response) => {
