@@ -50,7 +50,7 @@ model Product {
   id                  String                @id @default(uuid())
   category            Category              @relation(fields: [categoryId], references: [id])
   categoryId          String
-  name                String
+  name                String                @unique
   description         String
   price               Float
   createdAt           DateTime              @default(now())
@@ -62,6 +62,7 @@ model Product {
   SavedProducts       SavedProducts[]
   Cart                Cart[]
   OrderItem           OrderItem[]
+  image               String?
 }
 
 model SavedProducts {

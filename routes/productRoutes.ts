@@ -14,6 +14,6 @@ router
 router.delete("/:id", productController.deleteProductById);
 router.put("/:id", productController.updateProductById);
 router.get("/aa", productController.getProductSorts);
-router.post("/imagesUpload", imageController.uploadImages);
+router.post("/imagesUpload/:id", imageController.uploadImages);
 
 export default router;
