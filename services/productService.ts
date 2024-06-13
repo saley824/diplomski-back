@@ -32,7 +32,7 @@ function applyDiscount(price: number, discount: number = 0.05): number {
 // const test = async (options: { searchTerm: string \\ }) => {};
 const getProductsByFilters = async (options: {
   filterObject: any;
-  sort: any ;
+  sort: any;
   page: number;
   perPage: number;
 }) => {
@@ -42,10 +42,8 @@ const getProductsByFilters = async (options: {
   let categoryId: string | null = null;
   let superCategoryId: string | null = null;
   let searchTerm: string | null = null;
-  // let page: number;
-  // let perPage: number;
 
-  console.log(filterObject)
+  console.log(filterObject);
   if (filterObject.categoryId) {
     categoryId = filterObject.categoryId.toString();
   }
@@ -113,7 +111,7 @@ const getProductsByFilters = async (options: {
         },
       },
     },
-    orderBy: sort ,
+    orderBy: sort,
   });
   let hasNext: boolean = products.length > perPage;
   if (hasNext) {

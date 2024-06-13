@@ -45,24 +45,63 @@ const getAllReviews = async (req: Request, res: Response) => {
   }
 };
 
-// const getAllReviewsByProductId = async (req: Request, res: Response) => {
-//   const reviews = await prisma.product.findMany({
-//     include: {
-//       Reviews: true,
-//     },
-//   });
-// };
-
 const getAllReviewsByUserId = async (req: Request, res: Response) => {
-  const reviews = await prisma.user.findMany({
-    include: {
-      Reviews: true,
-    },
-  });
+  const userId = req.body.userId;
+
+  try {
+    const reviews = await prisma.review.findMany({
+      where: {
+        userId: userId,
+      },
+    });
+
+    res.status(200).json({
+      status: "success",
+      data: reviews,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      status: "fail",
+    });
+  }
+};
+const isUserRatedProduct = async (req: Request, res: Response) => {
+  const userId = req.body.userId;
+  const productId = req.body.productId;
+
+  try {
+    const result = await prisma.review.aggregate({
+      where: {
+        productId: productId,
+        userId: userId,
+      },
+      _count: {
+        rating: true,
+      },
+    });
+    const result2 = await prisma.review.findFirst({
+      where: {
+        productId: productId,
+        userId: userId,
+      },
+    });
+
+    res.status(200).json({
+      status: "succaaaaess",
+      data: result2,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      status: "fail",
+    });
+  }
 };
 
 export default {
   makeReview,
   getAllReviews,
   getAllReviewsByUserId,
+  isUserRatedProduct,
 };

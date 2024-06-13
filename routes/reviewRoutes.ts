@@ -9,7 +9,8 @@ const router = express.Router();
 
 //API POTPIS MORA BITI JEDINSTVEN
 router.get("/", reviewController.getAllReviews);
-router.get("/:userId", reviewController.getAllReviewsByUserId);
+router.get("/user", reviewController.getAllReviewsByUserId);
+router.get("/isUserRatedProduct", reviewController.isUserRatedProduct);
 router
   .route("/makeReview")
   .post(validate(reviewSchemaCreate), reviewController.makeReview);

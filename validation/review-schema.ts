@@ -21,7 +21,7 @@ export const reviewSchemaCreate = object({
   body: object({
     productId: string().uuid().required(),
     userId: string().uuid().required(),
-    comment: string().required(),
+    comment: string(),
     rating: number().required().min(1).max(5),
   }),
 });

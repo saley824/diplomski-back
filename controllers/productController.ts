@@ -67,10 +67,21 @@ const getProductById = async (req: Request, res: Response) => {
       },
     });
 
+    const result = await prisma.review.aggregate({
+      where: {
+        productId: req.params.id,
+      },
+      _avg: {
+        rating: true,
+      },
+    });
+
     if (product.productDiscount != null) {
       product["discountedPrice"] =
         (product.price * (100 - product.productDiscount.percentage)) / 100;
     }
+
+    product["avg"] = result._avg;
 
     // if (product == null) {
     // }
