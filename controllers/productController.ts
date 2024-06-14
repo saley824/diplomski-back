@@ -74,6 +74,9 @@ const getProductById = async (req: Request, res: Response) => {
       _avg: {
         rating: true,
       },
+      _count: {
+        rating: true,
+      },
     });
 
     if (product.productDiscount != null) {
@@ -81,7 +84,8 @@ const getProductById = async (req: Request, res: Response) => {
         (product.price * (100 - product.productDiscount.percentage)) / 100;
     }
 
-    product["avg"] = result._avg;
+    product["avg"] = result._avg.rating;
+    product["count"] = result._count.rating;
 
     // if (product == null) {
     // }
