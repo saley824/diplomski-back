@@ -10,6 +10,8 @@ import orderRouter from "./routes/orderRoutes";
 import homeRouter from "./routes/homeRoute";
 import reviewRouter from "./routes/reviewRoutes";
 
+import dotenv from "dotenv";
+dotenv.config();
 // import PostRouter from "./routes/blog.route";
 
 // export const prisma = new PrismaClient().$extends({

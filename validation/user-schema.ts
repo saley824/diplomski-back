@@ -21,4 +21,12 @@ export const userSchemaCreate = object({
   }),
 });
 
+export const loginSchema = object({
+  body: object({
+    username: string().required().min(6),
+    password: string().required().min(8),
+  }),
+});
+
 export type UserSchemaCreateDto = InferType<typeof userSchemaCreate>["body"];
+export type userSchemaCreateDto = InferType<typeof userSchemaCreate>["body"];
