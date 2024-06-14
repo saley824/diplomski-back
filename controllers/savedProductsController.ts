@@ -1,11 +1,6 @@
 import { Request, Response } from "express";
 
 import { prisma } from "../script";
-import ProductService from "../services/productService";
-import {
-  productSchemaCreateDto,
-  ProductSortsSchemaDto,
-} from "../validation/product-schema";
 
 const saveProduct = async (req: Request, res: Response) => {
   try {
@@ -95,9 +90,37 @@ const deleteSavedProduct = async (req: Request, res: Response) => {
   }
 };
 
+const checkIfUserSavedProduct = async (req: Request, res: Response) => {
+  const { productId, userId } = req.params;
+
+  try {
+    const savedProduct = await prisma.savedProducts.findUnique({
+      where: {
+        productId_userId: {
+          productId: productId,
+          userId: userId,
+        },
+      },
+    });
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        isSaved: savedProduct != null,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      status: "fail",
+    });
+  }
+};
+
 export default {
   saveProduct,
   getSavedProducts,
   deleteSavedProduct,
   getSavedProductsByUserId,
+  checkIfUserSavedProduct,
 };
