@@ -5,7 +5,7 @@ import { prisma } from "../script";
 const saveProduct = async (req: Request, res: Response) => {
   try {
     const { productId, userId } = req.body;
-    console.log(productId);
+
     const savedProduct = await prisma.savedProducts.create({
       data: {
         productId: productId,

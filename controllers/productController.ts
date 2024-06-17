@@ -241,12 +241,43 @@ const updateProductById = async (req: Request, res: Response) => {
 
 const deleteProductById = async (req: Request, res: Response) => {
   try {
-    const productPriceHistory = await prisma.productPriceHistory.deleteMany({
+    //delete product price history
+    await prisma.productPriceHistory.deleteMany({
       where: {
         productId: req.params.id,
       },
     });
-    const product = await prisma.product.delete({
+    //delete product discount
+    await prisma.productDiscount.deleteMany({
+      where: {
+        productId: req.params.id,
+      },
+    });
+    //delete saved product
+    await prisma.savedProducts.deleteMany({
+      where: {
+        productId: req.params.id,
+      },
+    });
+    //delete order item
+    await prisma.orderItem.deleteMany({
+      where: {
+        productId: req.params.id,
+      },
+    });
+    //delete review
+    await prisma.review.deleteMany({
+      where: {
+        productId: req.params.id,
+      },
+    });
+    // delete product from cart
+    await prisma.cart.deleteMany({
+      where: {
+        productId: req.params.id,
+      },
+    });
+    const deletedProduct = await prisma.product.delete({
       where: {
         id: req.params.id,
       },
