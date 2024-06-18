@@ -27,6 +27,16 @@ export const loginSchema = object({
     password: string().required().min(8),
   }),
 });
+export const addressSchema = object({
+  body: object({
+    userId: string().required(),
+    country: string().required(),
+    city: string().required(),
+    streetName: string().required(),
+    streetNumber: string().required(),
+    postalCode: string().required(),
+  }),
+});
 
-export type UserSchemaCreateDto = InferType<typeof userSchemaCreate>["body"];
 export type userSchemaCreateDto = InferType<typeof userSchemaCreate>["body"];
+export type addressSchemaDto = InferType<typeof addressSchema>["body"];

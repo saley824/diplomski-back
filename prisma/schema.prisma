@@ -28,24 +28,29 @@ enum OrderStatus {
 }
 
 model User {
-  id            String          @id @default(uuid())
-  name          String
-  lastName      String
-  email         String          @unique
-  username      String          @unique
-  password      String
-  SavedProducts SavedProducts[]
-  Cart          Cart[]
-  Order         Order[]
-
-  Reviews Review[]
+  id                   String          @id @default(uuid())
+  name                 String
+  lastName             String
+  email                String          @unique
+  username             String          @unique
+  password             String
+  passwordResetToken   String?
+  passwordResetExpires DateTime?
+  SavedProducts        SavedProducts[]
+  Cart                 Cart[]
+  Order                Order[]
+  Reviews              Review[]
+  UserAddress          UserAddress?
 }
 
 model UserAddress {
-  id           String @id @default(uuid())
-  City         String
-  StreetName   String
-  StreetNumber String
+  country      String
+  city         String
+  streetName   String
+  streetNumber String
+  postalCode   String
+  user         User   @relation(fields: [userId], references: [id])
+  userId       String @unique
 }
 
 model Product {

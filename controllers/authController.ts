@@ -2,11 +2,12 @@ import { NextFunction, Request, Response } from "express";
 
 import { prisma } from "../script";
 import ProductService from "../services/productService";
-import { UserSchemaCreateDto } from "../validation/user-schema";
+import { userSchemaCreateDto } from "../validation/user-schema";
 
 import UserService from "../services/userService";
 
 import jwt from "jsonwebtoken";
+import userService from "../services/userService";
 
 const signToken = (id: String) => {
   const jwtSecret = process.env.JWT_SECRET;
@@ -28,7 +29,7 @@ const signToken = (id: String) => {
 };
 const addUser = async (req: Request, res: Response) => {
   try {
-    let userBody = req.body as UserSchemaCreateDto;
+    let userBody = req.body as userSchemaCreateDto;
     const hashedPassword = await UserService.hashPassword(userBody.password);
     userBody.password = hashedPassword;
     const user = await prisma.user.create({
@@ -89,7 +90,45 @@ const login = async (req: Request, res: Response) => {
   });
 };
 
+const forgotPassword = async (req: Request, res: Response) => {
+  const { email } = req.body;
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        email: email,
+      },
+    });
+    if (!user) {
+      res.status(404).json({
+        status: "fail",
+        message: "Not find user",
+      });
+    }
+    const { resetToken, hashResetToken, tokenExpires } =
+      userService.createPasswordResetToken();
+
+    await userService.sendEmail({
+      email: email,
+      subject: "Forgot password",
+      message: resetToken,
+    });
+    res.status(200).json({
+      status: "Success",
+      message: "Email is sent",
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: "fail",
+      message: error,
+    });
+  }
+};
+
+const resetPassword = async (req: Request, res: Response) => {};
+
 export default {
   addUser,
   login,
+  forgotPassword,
+  resetPassword,
 };
