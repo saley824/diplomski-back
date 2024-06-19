@@ -28,7 +28,8 @@ router.put(
 );
 
 // PASSWORD HANDLER
-router.post("/resetPassword", authController.resetPassword);
+router.patch("/resetPassword", authController.resetPassword);
 router.post("/forgotPassword", authController.forgotPassword);
+router.post("/changePassword", authController.changePassword);
 
 export default router;

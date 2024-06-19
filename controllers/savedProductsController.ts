@@ -12,6 +12,8 @@ const saveProduct = async (req: Request, res: Response) => {
         userId: userId,
       },
     });
+
+    
     res.status(200).json({
       status: "success",
       data: {

@@ -13,6 +13,8 @@ const getCategoryById = async (req: Request, res: Response) => {
         name: true,
       },
     });
+
+    
     res.status(200).json({
       status: "success",
       data: {

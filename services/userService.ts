@@ -50,7 +50,7 @@ const compare = async (password: string, candidate: string) => {
 
 // ----------------------------CREATE PASSWORD TOKEN-----------------------------------
 const createPasswordResetToken = function () {
-  const resetToken = crypto.randomBytes(4).toString("hex");
+  const resetToken = crypto.randomBytes(3).toString("hex");
 
   const hashResetToken = crypto
     .createHash("sha256")
