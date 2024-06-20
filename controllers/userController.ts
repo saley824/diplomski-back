@@ -20,6 +20,52 @@ const getUsers = async (req: Request, res: Response) => {
     });
   }
 };
+const getUserInfo = async (req: Request, res: Response) => {
+  const {id} = req.body;
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id:id,
+      }
+    });
+    res.status(200).json({
+      status: "success",
+      data: {
+        user,
+      },
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: "fail",
+    });
+  }
+};
+const updateUserInfo = async (req: Request, res: Response) => {
+  const {id, name, lastName, username, email} = req.body;
+  try {
+    const user = await prisma.user.update({
+      where: {
+        id:id,
+      },
+      data:{
+  name:name,
+  lastName:lastName,
+  username: username,
+  email: email,
+      }
+    });
+    res.status(200).json({
+      status: "success",
+      data: {
+        user,
+      },
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: "fail",
+    });
+  }
+};
 
 const addNewAddress = async (req: Request, res: Response) => {
   try {

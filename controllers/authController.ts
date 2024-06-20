@@ -83,6 +83,7 @@ const login = async (req: Request, res: Response) => {
 
   const token = signToken(user.id);
   res.status(200).json({
+    role: user.isShop ? "Shop" : "User",
     status: "success",
     token,
     data: {
@@ -107,8 +108,7 @@ const forgotPassword = async (req: Request, res: Response) => {
     }
     const { resetToken, hashResetToken, tokenExpires } =
       userService.createPasswordResetToken();
-    // const test =
-    //   userService.createPasswordResetToken();
+
       console.log(resetToken)
       await prisma.user.update({
         where:{
@@ -152,7 +152,10 @@ const resetPassword = async (req: Request, res: Response) => {
   const selectedUser = await prisma.user.findFirst(
     {
       where:{
-        passwordResetToken: hashResetToken
+        passwordResetToken: hashResetToken,
+        passwordResetExpires: {
+          gte: new Date()
+        }
       },
       select:{
         id:true
@@ -215,6 +218,9 @@ export default {
   resetPassword,
   changePassword
 };
+
+
+
 
 
 const setNewPassword =  async (password: string, confirmPassword: string,  res: Response, userId : string) => {

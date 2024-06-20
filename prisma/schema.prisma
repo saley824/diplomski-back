@@ -36,11 +36,13 @@ model User {
   password             String
   passwordResetToken   String?
   passwordResetExpires DateTime?
+  isShop               Boolean?
   SavedProducts        SavedProducts[]
   Cart                 Cart[]
   Order                Order[]
   Reviews              Review[]
   UserAddress          UserAddress?
+
 }
 
 model UserAddress {

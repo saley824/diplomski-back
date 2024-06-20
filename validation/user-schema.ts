@@ -15,7 +15,7 @@ export const userSchemaCreate = object({
   body: object({
     name: string().required(),
     lastName: string().required(),
-    username: string().required().min(6),
+    username: string().required().min(4),
     email: string().email().required(),
     password: string().required().min(8),
   }),
@@ -23,7 +23,7 @@ export const userSchemaCreate = object({
 
 export const loginSchema = object({
   body: object({
-    username: string().required().min(6),
+    username: string().required().min(4),
     password: string().required().min(8),
   }),
 });
