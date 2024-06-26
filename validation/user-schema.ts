@@ -18,6 +18,7 @@ export const userSchemaCreate = object({
     username: string().required().min(4),
     email: string().email().required(),
     password: string().required().min(8),
+    confirmPassword: string().oneOf([ref('password')], 'Passwords must match').required(),
   }),
 });
 

@@ -12,6 +12,7 @@ const router = express.Router();
 
 router.get("/", userController.getUsers);
 router.post("/signUp", validate(userSchemaCreate), authController.addUser);
+// router.post("/signUp", authController.addUser);
 router.post("/login", validate(loginSchema), authController.login);
 
 //ADDRESS

@@ -15,21 +15,32 @@ export const validate =
         { stripUnknown: true }
       );
 
-      schema.validateSync(data);
+      schema.validateSync(data, { abortEarly: false,  });
 
-      req.body = data.body;
-      req.query = data.query;
 
-      schema.validateSync(data, { abortEarly: false });
+      // req.body = data.body;
+      // req.query = data.query;
+
+      // schema.validateSync(data, { abortEarly: true,  });
       return next();
     } catch (err) {
+      // console.log(err)
       const error = err as ValidationError;
+      const errors = error.inner as ValidationError[];
+
+      const outPut = errors.map((error)=>{
+        return {
+          field: error.path?.split(".")[1],
+          message: error.message,
+        };
+      })
+      console.log(errors)
       return res.status(400).json({
-        name: error.name,
-        message: error.message,
-        errors: error.errors,
-        value: error.value,
-        path: error.path,
+        success:false,
+        message:"ValidationError",
+        type:"ValidationError",
+        errors: outPut
+        
       });
     }
   };

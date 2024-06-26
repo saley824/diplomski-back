@@ -5,6 +5,7 @@ import ProductService from "../services/productService";
 import { userSchemaCreateDto } from "../validation/user-schema";
 import crypto from "crypto"
 import UserService from "../services/userService";
+import ErrorService from "../services/errorService";
 
 import jwt from "jsonwebtoken";
 import userService from "../services/userService";
@@ -29,6 +30,7 @@ const signToken = (id: String) => {
   return token;
 };
 const addUser = async (req: Request, res: Response) => {
+  
   try {
     let userBody = req.body as userSchemaCreateDto;
     const hashedPassword = await UserService.hashPassword(userBody.password);
@@ -45,16 +47,15 @@ const addUser = async (req: Request, res: Response) => {
 
     const token = signToken(user.id);
     res.status(200).json({
-      status: "success",
+      success: true,
       token,
       data: {
+        success:true,
         data: userBody,
       },
     });
   } catch (error) {
-    res.status(404).json({
-      status: "fail",
-    });
+    ErrorService.handle404(res)
   }
 };
 
@@ -67,6 +68,15 @@ const login = async (req: Request, res: Response) => {
     where: {
       username: username,
     },
+    select:{
+      id:true,
+      name:true,
+      lastName:true,
+      email:true,
+      username:true,
+      isShop:true,
+      password:true
+    }
   });
   let isCorrectPassword = false;
   if (user != null) {
@@ -75,7 +85,7 @@ const login = async (req: Request, res: Response) => {
 
   if (!user || !isCorrectPassword) {
     res.status(401).json({
-      status: "fail",
+      success: false,
       message: "Incorrect email or password",
     });
     return;
@@ -83,11 +93,11 @@ const login = async (req: Request, res: Response) => {
 
   const token = signToken(user.id);
   res.status(200).json({
-    role: user.isShop ? "Shop" : "User",
-    status: "success",
-    token,
+    success: true,
     data: {
       user,
+      token,
+      role: user.isShop ? "Shop" : "User",
     },
   });
 };
@@ -102,7 +112,7 @@ const forgotPassword = async (req: Request, res: Response) => {
     });
     if (!user) {
       res.status(404).json({
-        status: "fail",
+        success: false,
         message: "Not find user",
       });
     }
@@ -125,20 +135,17 @@ const forgotPassword = async (req: Request, res: Response) => {
     //   message: resetToken,
     // });
     res.status(200).json({
-      status: "Success",
+      success: true,
       message: "Email is sent",
      
     });
   } catch (error) {
-    res.status(404).json({
-      status: "fail",
-      message: error,
-    });
+    console.log("error")
+    ErrorService.handle404(res)
   }
 };
 
-const checkIsTokenValid = async (req: Request, res: Response) => {
-};
+
 
 const resetPassword = async (req: Request, res: Response) => {
   try {
@@ -164,7 +171,7 @@ const resetPassword = async (req: Request, res: Response) => {
   )
   if(!selectedUser){
     res.status(400).json({
-      status: "fail",
+      success: false,
       message: "Token is invalid or expired",
     });
     return;
@@ -172,10 +179,7 @@ const resetPassword = async (req: Request, res: Response) => {
   setNewPassword(password, confirmPassword, res, selectedUser.id);
 
   } catch (error) {
-    res.status(404).json({
-      status: "fail",
-      message: error,
-    });
+    ErrorService.handle404(res)
   }
 
 
@@ -197,7 +201,7 @@ const changePassword = async (req: Request, res: Response) => {
   }
   if ( !isCorrectPassword) {
     res.status(401).json({
-      status: "fail",
+      success: false,
       message: "Incorrect password",
     });
     return;
@@ -205,10 +209,7 @@ const changePassword = async (req: Request, res: Response) => {
 
   setNewPassword(password, confirmPassword, res, userId);
 }catch (error) {
-  res.status(404).json({
-    status: "fail",
-    message: error,
-  });
+  ErrorService.handle404(res)
 }
 }
 export default {
@@ -226,14 +227,14 @@ export default {
 const setNewPassword =  async (password: string, confirmPassword: string,  res: Response, userId : string) => {
   if(password != confirmPassword){
     res.status(400).json({
-      status: "fail",
+      success: false,    
       message: "Password do not match",
     });
     return;
   }
   if(password.length < 8){
     res.status(400).json({
-      status: "fail",
+      success: false,
       message: "Password must be at least 8 characters",
     });
   }
@@ -251,7 +252,7 @@ const setNewPassword =  async (password: string, confirmPassword: string,  res: 
     })
 
     res.status(200).json({
-      status: "success",
+      success: true,
       message: "Password is changed",
     });
 
