@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { prisma } from "../script";
 
 import { addressSchemaDto } from "../validation/user-schema";
+import { Console } from "console";
 
 const getUsers = async (req: Request, res: Response) => {
   try {
@@ -21,15 +22,25 @@ const getUsers = async (req: Request, res: Response) => {
   }
 };
 const getUserInfo = async (req: Request, res: Response) => {
-  const {id} = req.body;
+  const {id} = req.params;
+  console.log(id)
   try {
     const user = await prisma.user.findUnique({
       where: {
         id:id,
+      },
+      select:{
+        id:true,
+        name:true,
+        lastName:true,
+        email:true,
+        username:true,
+        isShop:true,
+        password:true
       }
     });
     res.status(200).json({
-      status: "success",
+      success: true,
       data: {
         user,
       },
@@ -133,4 +144,5 @@ export default {
   addNewAddress,
   updateAddress,
   getUserAddressById,
+  getUserInfo
 };
