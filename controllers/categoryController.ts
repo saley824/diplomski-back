@@ -41,13 +41,14 @@ const getAllSubCategoriesById = async (req: Request, res: Response) => {
       },
     });
     res.status(200).json({
-      status: "success",
+      success: true,
       data: {
         categories,
       },
     });
   } catch (error) {
     res.status(404).json({
+      success: false,
       status: "fail",
     });
   }
@@ -55,6 +56,7 @@ const getAllSubCategoriesById = async (req: Request, res: Response) => {
 
 //FINISHED
 const getAllSuperCategories = async (req: Request, res: Response) => {
+  
   try {
     const categories = await prisma.category.findMany({
       where: {
@@ -66,13 +68,14 @@ const getAllSuperCategories = async (req: Request, res: Response) => {
       },
     });
     res.status(200).json({
-      status: "success",
+      success: true,
       data: {
         categories,
       },
     });
   } catch (error) {
     res.status(404).json({
+      success: false,
       status: "fail",
     });
   }
@@ -82,13 +85,14 @@ const getAllCategories = async (req: Request, res: Response) => {
   try {
     const categories = await prisma.category.findMany();
     res.status(200).json({
-      status: "success",
+      success: true,
       data: {
         categories,
       },
     });
   } catch (error) {
     res.status(404).json({
+      success: false,
       status: "fail",
     });
   }
@@ -104,7 +108,7 @@ const addNewCategory = async (req: Request, res: Response) => {
       },
     });
     res.status(200).json({
-      status: "success",
+      success: true,
       data: {
         superCategoryId,
         name,
@@ -112,6 +116,7 @@ const addNewCategory = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(404).json({
+      success: false,
       status: "fail",
     });
   }
@@ -137,13 +142,14 @@ const updateCategory = async (req: Request, res: Response) => {
       },
     });
     res.status(200).json({
-      status: "success",
+      success: true,
       data: {
         message: "Proslo",
       },
     });
   } catch (error) {
     res.status(404).json({
+      success: false,
       status: "fail",
     });
   }
@@ -152,13 +158,14 @@ const deleteAllCategories = async (req: Request, res: Response) => {
   try {
     const category = await prisma.category.deleteMany({});
     res.status(200).json({
-      status: "success",
+      success: true,
       data: {
         message: "Deleted",
       },
     });
   } catch (error) {
     res.status(404).json({
+      success: false,
       status: "fail",
     });
   }

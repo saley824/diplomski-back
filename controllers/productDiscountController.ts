@@ -13,19 +13,27 @@ import {
 // DISCOUNT SECTION
 
 const addProductDiscount = async (req: Request, res: Response) => {
+  console.log("uslo")
   try {
     const productDiscountBody = req.body as productDiscountSchemaCreateDto;
     const productDiscount = await prisma.productDiscount.create({
-      data: productDiscountBody,
+      data: {
+productId :productDiscountBody.productId,
+percentage:productDiscountBody.percentage,
+from:  new Date(productDiscountBody.from),
+to:  new Date(productDiscountBody.to),
+      }
     });
     res.status(200).json({
-      status: "success",
+      success: true,
       data: {
         data: productDiscount,
       },
     });
   } catch (error) {
+    console.log(error)
     res.status(404).json({
+      success: false,
       status: "fail",
     });
   }
@@ -38,16 +46,21 @@ const updateProductDiscount = async (req: Request, res: Response) => {
       where: {
         productId: id,
       },
-      data: productDiscountBody,
+      data: {
+        percentage:productDiscountBody.percentage,
+        from:  new Date(productDiscountBody.from),
+        to:  new Date(productDiscountBody.to),
+              }
     });
     res.status(200).json({
-      status: "success",
+      success: true,
       data: {
         data: productDiscount,
       },
     });
   } catch (error) {
     res.status(404).json({
+      success: false,
       status: "fail",
     });
   }
@@ -62,13 +75,14 @@ const deleteProductDiscountById = async (req: Request, res: Response) => {
       },
     });
     res.status(200).json({
-      status: "success",
+      success: true,
       data: {
         message: "Product discount deleted",
       },
     });
   } catch (error) {
     res.status(404).json({
+      success: false,
       status: "fail",
     });
   }

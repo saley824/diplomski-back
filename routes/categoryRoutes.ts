@@ -7,7 +7,7 @@ const router = express.Router();
 //API POTPIS MORA BITI JEDINSTVEN
 router.get("/", CategoryController.getAllCategories);
 router.get("/:id", CategoryController.getCategoryById);
-router.get("/superCategories/all", CategoryController.getAllCategories);
+router.get("/superCategories/all", CategoryController.getAllSuperCategories);
 router.get("/:id/subCategories", CategoryController.getAllSubCategoriesById);
 router.post("/addCategory", CategoryController.addNewCategory);
 router.put("/updateCategory", CategoryController.updateCategory);

@@ -37,7 +37,8 @@ const getProductSorts = async (req: Request, res: Response) => {
   ];
 
   res.status(200).json({
-    status: "success",
+          success:true,
+
     sorts: {
       sorts,
     },
@@ -91,7 +92,8 @@ const getProductById = async (req: Request, res: Response) => {
     // }
     // check discount
     res.status(200).json({
-      status: "success",
+            success:true,
+
       data: {
         product,
       },
@@ -123,6 +125,7 @@ const getAllProducts = async (req: Request, res: Response) => {
     perPage = filterObject.perPage * 1;
   } else {
     res.status(404).json({
+      success:false,
       message: "dje ti je paginacija",
       status: "fail",
     });
@@ -138,7 +141,7 @@ const getAllProducts = async (req: Request, res: Response) => {
 
     res.status(200).json({
       hasNext: hasNext,
-      status: "success",
+      success:true,
       count: products.length,
       data: {
         products,
@@ -146,6 +149,7 @@ const getAllProducts = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(404).json({
+      success:false,
       status: "fail",
     });
   }
@@ -165,12 +169,13 @@ const addNewProduct = async (req: Request, res: Response) => {
       },
     });
     res.status(200).json({
-      status: "success",
+      success:true,
       data: product,
     });
   } catch (error) {
     console.log(error);
     res.status(404).json({
+      success:false,
       status: "fail",
     });
   }
@@ -208,13 +213,15 @@ const updateProductById = async (req: Request, res: Response) => {
       data: productBody,
     });
     res.status(200).json({
-      status: "success",
+            success:true,
+
       data: {
         data: productBody,
       },
     });
   } catch (error) {
     res.status(404).json({
+      success:false,
       status: "fail",
     });
   }
@@ -226,7 +233,8 @@ const updateProductById = async (req: Request, res: Response) => {
 //   try {
 //     const category = await prisma.category.deleteMany({});
 //     res.status(200).json({
-//       status: "success",
+//       success:true,
+
 //       data: {
 //         message: "Deleted",
 //       },
@@ -282,7 +290,8 @@ const deleteProductById = async (req: Request, res: Response) => {
       },
     });
     res.status(200).json({
-      status: "success",
+            success:true,
+
       data: {
         message: "Deleted",
       },
@@ -290,6 +299,7 @@ const deleteProductById = async (req: Request, res: Response) => {
   } catch (error) {
     console.log(error);
     res.status(404).json({
+      success:false,
       status: "fail",
     });
   }
