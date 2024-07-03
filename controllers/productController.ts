@@ -138,13 +138,38 @@ const getAllProducts = async (req: Request, res: Response) => {
       page: page,
       perPage: perPage,
     });
+    
+    let returnProducts : any [] = [];
+
+
+    for (let i = 0; i < products.length; i++) {
+      let productTemp: any = {};
+      productTemp = products[i];
+      const review = await prisma.review.aggregate({
+        where: {
+          productId: products[i].id,
+        },
+        _avg: {
+          rating: true,
+        },
+        _count: {
+          rating: true,
+        },
+      });
+       
+      productTemp["avg"] = review._avg.rating;
+      productTemp["count"] = review._count.rating;
+      returnProducts.push(productTemp)
+    }
+
+ 
 
     res.status(200).json({
       hasNext: hasNext,
       success:true,
       count: products.length,
       data: {
-        products,
+        returnProducts,
       },
     });
   } catch (error) {
