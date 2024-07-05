@@ -14,7 +14,6 @@ const getDiscountedProducts = async (req: Request, res: Response) => {
 
     const { hasNext, products } = await productService.getProductsByFilters({
         filterObject:filterObject,
-        sort: sort,
         page: 1,
         perPage: 10,
     

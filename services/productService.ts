@@ -32,16 +32,19 @@ function applyDiscount(price: number, discount: number = 0.05): number {
 // const test = async (options: { searchTerm: string \\ }) => {};
 const getProductsByFilters = async (options: {
   filterObject: any;
-  sort: any;
   page: number;
   perPage: number;
 }) => {
-  const { filterObject, sort, page, perPage } = options;
-
+  const { filterObject, page, perPage } = options;
+  let sort: any = {};
   let hasDiscount: boolean = false;
   let categoryId: string | null = null;
   let superCategoryId: string | null = null;
   let searchTerm: string | null = null;
+
+  let sortBy: string = filterObject.sortBy?.toString();
+  let orderBy: string = filterObject.orderBy?.toString();
+  sort[sortBy] = orderBy;
 
   console.log(filterObject);
   if (filterObject.categoryId) {
@@ -111,7 +114,16 @@ const getProductsByFilters = async (options: {
         },
       },
     },
-    orderBy: sort,
+    orderBy: sortBy == "discount" ?
+    [
+      {
+        productDiscount : {
+          percentage: orderBy
+        },
+      }
+    ]
+    :sort
+    ,
   });
   let hasNext: boolean = products.length > perPage;
   if (hasNext) {

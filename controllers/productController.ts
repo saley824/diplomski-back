@@ -106,16 +106,16 @@ const getProductById = async (req: Request, res: Response) => {
 };
 
 const getAllProducts = async (req: Request, res: Response) => {
-  let sort: any = {};
+  // let sort: any = {};
   let filterObject: any = {};
 
   filterObject = req.query;
 
   // --------------SORT-------------------------------
   if (filterObject.sortBy && filterObject.orderBy) {
-    let sortBy: string = filterObject.sortBy?.toString();
-    let orderBy: string = filterObject.orderBy?.toString();
-    sort[sortBy] = orderBy;
+    // let sortBy: string = filterObject.sortBy?.toString();
+    // let orderBy: string = filterObject.orderBy?.toString();
+    // sort[sortBy] = orderBy;
   }
 
   let page: number = 1;
@@ -134,7 +134,6 @@ const getAllProducts = async (req: Request, res: Response) => {
   try {
     const { hasNext, products } = await productService.getProductsByFilters({
       filterObject: filterObject,
-      sort: sort,
       page: page,
       perPage: perPage,
     });
@@ -173,6 +172,7 @@ const getAllProducts = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
+    console.log(error)
     res.status(404).json({
       success:false,
       status: "fail",
