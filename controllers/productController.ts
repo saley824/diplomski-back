@@ -82,11 +82,11 @@ const getProductById = async (req: Request, res: Response) => {
 
     if (product.productDiscount != null) {
       product["discountedPrice"] =
-        (product.price * (100 - product.productDiscount.percentage)) / 100;
+       ( (product.price*1 * (100 - product.productDiscount.percentage*1)) / 100 ).toFixed(2);
     }
 
-    product["avg"] = result._avg.rating;
-    product["count"] = result._count.rating;
+    product["avgReview"] = result._avg.rating;
+    product["countReview"] = result._count.rating;
 
     // if (product == null) {
     // }
@@ -143,6 +143,7 @@ const getAllProducts = async (req: Request, res: Response) => {
 
     for (let i = 0; i < products.length; i++) {
       let productTemp: any = {};
+      
       productTemp = products[i];
       const review = await prisma.review.aggregate({
         where: {
@@ -156,19 +157,22 @@ const getAllProducts = async (req: Request, res: Response) => {
         },
       });
        
-      productTemp["avg"] = review._avg.rating;
-      productTemp["count"] = review._count.rating;
+      productTemp["avgReview"] = review._avg.rating;
+      productTemp["countReview"] = review._count.rating;
+
+
+        
+
+      productTemp["discountedPrice"] =  productTemp["productDiscount"] != null ?  ((productTemp["price"]*1 * (100 - productTemp["productDiscount"].percentage*1)) / 100)  : null 
       returnProducts.push(productTemp)
     }
-
- 
 
     res.status(200).json({
       hasNext: hasNext,
       success:true,
       count: products.length,
       data: {
-        returnProducts,
+       products: returnProducts,
       },
     });
   } catch (error) {

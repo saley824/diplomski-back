@@ -34,7 +34,7 @@ to:  new Date(productDiscountBody.to),
     console.log(error)
     res.status(404).json({
       success: false,
-      status: "fail",
+      
     });
   }
 };
@@ -61,7 +61,7 @@ const updateProductDiscount = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(404).json({
       success: false,
-      status: "fail",
+      
     });
   }
 };
@@ -83,7 +83,7 @@ const deleteProductDiscountById = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(404).json({
       success: false,
-      status: "fail",
+      
     });
   }
 };

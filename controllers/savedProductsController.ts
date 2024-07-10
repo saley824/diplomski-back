@@ -15,14 +15,15 @@ const saveProduct = async (req: Request, res: Response) => {
 
     
     res.status(200).json({
-      status: "success",
+      success: true,
       data: {
         data: savedProduct,
       },
     });
   } catch (error) {
     res.status(404).json({
-      status: "fail",
+      success: false,
+
     });
   }
 };
@@ -30,7 +31,8 @@ const getSavedProducts = async (req: Request, res: Response) => {
   try {
     const savedProducts = await prisma.savedProducts.findMany({});
     res.status(200).json({
-      status: "success",
+      success: true,
+
       count: savedProducts.length,
       data: {
         savedProducts,
@@ -38,7 +40,8 @@ const getSavedProducts = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(404).json({
-      status: "fail",
+      success: false,
+
     });
   }
 };
@@ -53,7 +56,8 @@ const getSavedProductsByUserId = async (req: Request, res: Response) => {
       },
     });
     res.status(200).json({
-      status: "success",
+      success: true,
+    
       count: savedProducts.length,
       data: {
         savedProducts,
@@ -61,7 +65,7 @@ const getSavedProductsByUserId = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(404).json({
-      status: "fail",
+      success: false
     });
   }
 };
@@ -79,7 +83,8 @@ const deleteSavedProduct = async (req: Request, res: Response) => {
       },
     });
     res.status(200).json({
-      status: "success",
+            success: true,
+
       data: {
         message: "Saved Product is deleted",
         deletedProduct,
@@ -87,7 +92,7 @@ const deleteSavedProduct = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(404).json({
-      status: "fail",
+      success: false
     });
   }
 };
@@ -106,7 +111,8 @@ const checkIfUserSavedProduct = async (req: Request, res: Response) => {
     });
 
     res.status(200).json({
-      status: "success",
+            success: true,
+
       data: {
         isSaved: savedProduct != null,
       },
@@ -114,7 +120,7 @@ const checkIfUserSavedProduct = async (req: Request, res: Response) => {
   } catch (error) {
     console.log(error);
     res.status(404).json({
-      status: "fail",
+      success: false
     });
   }
 };

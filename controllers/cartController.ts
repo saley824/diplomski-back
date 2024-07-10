@@ -12,16 +12,17 @@ const getCart = async (req: Request, res: Response) => {
     const cart = await cartService.getCart(userId);
 
     res.status(200).json({
-      status: "success",
-      count: cart.cartItemsDetails.length,
-      totalPrice: cart.totalPrice,
+      success:true,
+     
       data: {
+        count: cart.cartItemsDetails.length,
+        totalPrice: cart.totalPrice,
         cartItemsDetails: cart.cartItemsDetails,
       },
     });
   } catch (error) {
     res.status(404).json({
-      status: "fail",
+      success:false
     });
   }
 };
@@ -38,14 +39,14 @@ const addToCart = async (req: Request, res: Response) => {
       },
     });
     res.status(200).json({
-      status: "success",
+      success:true,
       data: {
         data: cartItem,
       },
     });
   } catch (error) {
     res.status(404).json({
-      status: "fail",
+      success:false
     });
   }
 };
@@ -64,7 +65,7 @@ const removeCartItem = async (req: Request, res: Response) => {
     });
 
     res.status(200).json({
-      status: "success",
+      success:true,
       data: {
         message: "Cart item is deleted",
         removedCartItem,
@@ -72,7 +73,7 @@ const removeCartItem = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(404).json({
-      status: "fail",
+      success:false
     });
   }
 };
@@ -110,7 +111,7 @@ const incrementCartItemQuantity = async (req: Request, res: Response) => {
       res.status(400).json({
         message:
           "There is no anymore this product on stock. It removed from cart",
-        status: "fail",
+        success:false
       });
       return;
     }
@@ -119,7 +120,7 @@ const incrementCartItemQuantity = async (req: Request, res: Response) => {
       // case when quantity is 0 and we try to decrement quantity
       res.status(400).json({
         message: "Bad request, quantity cant be 0",
-        status: "fail",
+        success:false
       });
       return;
     }
@@ -131,7 +132,7 @@ const incrementCartItemQuantity = async (req: Request, res: Response) => {
     ) {
       res.status(400).json({
         message: "There arent enough",
-        status: "fail",
+        success:false
       });
       return;
     }
@@ -152,7 +153,7 @@ const incrementCartItemQuantity = async (req: Request, res: Response) => {
       res.status(400).json({
         message:
           "There is not enough amount. Quantity is set to current availability",
-        status: "fail",
+        success:false
       });
       return;
     }
@@ -173,20 +174,20 @@ const incrementCartItemQuantity = async (req: Request, res: Response) => {
         },
       });
       res.status(200).json({
-        status: "success",
+        success:true,
         data: {
           cartItem,
         },
       });
     } catch (error) {
       res.status(404).json({
-        status: "fail",
+        success:false
       });
     }
   } else {
     res.status(400).json({
       message: "Bad request, cant find item",
-      status: "fail",
+      success:false,
     });
   }
 };

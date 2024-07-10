@@ -6,13 +6,15 @@ import imageController from "../controllers/imageController";
 
 const router = express.Router();
 
-router.get("/", productController.getAllProducts);
-router.get("/product/:id", productController.getProductById);
+//THERE ARE TWO CASES ADDED AND IMPLEMENTED
+
+router.get("/", productController.getAllProducts);  // add to mobile
+router.get("/product/:id", productController.getProductById); // add to mobile
 router
   .route("/")
-  .post(validate(productSchemaCreate), productController.addNewProduct);
-router.delete("/:id", productController.deleteProductById);
-router.put("/:id", productController.updateProductById);
+  .post(validate(productSchemaCreate), productController.addNewProduct); // add to mobile
+router.delete("/:id", productController.deleteProductById); // add to mobile
+router.put("/:id", productController.updateProductById);  // add to mobile
 router.get("/aa", productController.getProductSorts);
 router.post("/imagesUpload/:id", imageController.uploadImages);
 
