@@ -16,6 +16,7 @@ const getCart = async (userId: string | undefined) => {
     totalAmount: number;
     cartItemTotalPrice: number;
     discountedPrice: number | null;
+    percentage: number | null;
   }[] = [];
   let totalPrice: number = 0;
   let cartItemTotalPrice: number = 0;
@@ -61,6 +62,9 @@ const getCart = async (userId: string | undefined) => {
         price: product?.price,
         discountedPrice: discountedPrice,
         cartItemTotalPrice,
+        percentage:    product.productDiscount != null ?    product.productDiscount.percentage : null,
+
+        
       });
       totalPrice += cartItemTotalPrice;
       cartItemTotalPrice = 0;

@@ -12,13 +12,13 @@ const makeReview = async (req: Request, res: Response) => {
       data: reviewBody,
     });
     res.status(200).json({
-      status: "success",
+      success: true,
       data: reviewBody,
     });
   } catch (error) {
     console.log(error);
     res.status(404).json({
-      status: "fail",
+      success: false,
     });
   }
 };
@@ -34,13 +34,13 @@ const getAllReviews = async (req: Request, res: Response) => {
     });
 
     res.status(200).json({
-      status: "success",
+      success: true,
       data: reviews,
     });
   } catch (error) {
     console.log(error);
     res.status(404).json({
-      status: "fail",
+      success: false,
     });
   }
 };
@@ -56,19 +56,19 @@ const getAllReviewsByUserId = async (req: Request, res: Response) => {
     });
 
     res.status(200).json({
-      status: "success",
+      success: true,
       data: reviews,
     });
   } catch (error) {
     console.log(error);
     res.status(404).json({
-      status: "fail",
+      success: false,
     });
   }
 };
 const isUserRatedProduct = async (req: Request, res: Response) => {
-  const userId = req.body.userId;
-  const productId = req.body.productId;
+  const userId = req.params.userId;
+  const productId = req.params.productId;
 
   try {
     const result = await prisma.review.aggregate({
@@ -88,13 +88,13 @@ const isUserRatedProduct = async (req: Request, res: Response) => {
     });
 
     res.status(200).json({
-      status: "succaaaaess",
+      success: true,
       data: result2,
     });
   } catch (error) {
     console.log(error);
     res.status(404).json({
-      status: "fail",
+      success: false,
     });
   }
 };

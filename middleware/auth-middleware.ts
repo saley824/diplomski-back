@@ -19,7 +19,7 @@ export const checkToken = async (
   if (!token) {
     res.status(401).json({
       message: "Miss token. Please log in",
-      status: "fail",
+      success:false,
     });
     return;
   }
@@ -60,7 +60,7 @@ export const checkToken = async (
         res.status(401).json({
           message:
             "The user belonging to this token does not longer exists. Please log in",
-          status: "fail",
+            success:false,
         });
         return;
       }
@@ -70,7 +70,7 @@ export const checkToken = async (
     } catch (error) {
       res.status(401).json({
         message: "Invalid token. Please log in",
-        status: "fail",
+        success:false,
       });
       return;
     }

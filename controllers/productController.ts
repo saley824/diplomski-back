@@ -59,14 +59,25 @@ const getProductById = async (req: Request, res: Response) => {
             to: true,
           },
         },
-        ProductPriceHistory: {
+        productPriceHistory: {
           select: {
             newPrice: true,
             changeDate: true,
           },
         },
+        category:{
+          select:{
+            name:true,
+            id:true,
+          }
+
+        }
       },
     });
+
+
+    
+
 
     const result = await prisma.review.aggregate({
       where: {
@@ -82,11 +93,12 @@ const getProductById = async (req: Request, res: Response) => {
 
     if (product.productDiscount != null) {
       product["discountedPrice"] =
-       ( (product.price*1 * (100 - product.productDiscount.percentage*1)) / 100 ).toFixed(2);
+       ( (product.price*1 * (100 - product.productDiscount.percentage*1)) / 100 );
     }
 
     product["avgReview"] = result._avg.rating;
     product["countReview"] = result._count.rating;
+
 
     // if (product == null) {
     // }
