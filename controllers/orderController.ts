@@ -18,13 +18,17 @@ const makeOrder = async (req: Request, res: Response) => {
       const cartItem = cart.cartItemsDetails[index];
       if (cartItem.quantity > cartItem.totalAmount) {
         res.status(200).json({
-          status: "fail",
+          success:false,
           data: {
             message: "There aren't enough quantity of product " + cartItem.name,
           },
         });
         return;
       }
+
+
+      
+
 
       orderItems.push({
         orderId: orderUuid,
@@ -33,6 +37,9 @@ const makeOrder = async (req: Request, res: Response) => {
         totalAmount: cartItem.totalAmount,
         price: cartItem.price,
         productId: cartItem.productId,
+        totalPrice:cartItem.cartItemTotalPrice,
+        discountedPrice: cartItem.discountedPrice,
+        image: cartItem.image,
       });
     }
 
@@ -41,6 +48,7 @@ const makeOrder = async (req: Request, res: Response) => {
         id: orderUuid,
         userId: userId,
         totalPrice: cart.totalPrice,
+
       },
     });
 
@@ -51,6 +59,9 @@ const makeOrder = async (req: Request, res: Response) => {
         quantity: order.quantity,
         price: order.price,
         productId: order.productId,
+        totalPrice:order.totalPrice,
+        discountedPrice:order.discountedPrice,
+        img: order.image,
       })),
     });
 
@@ -67,7 +78,7 @@ const makeOrder = async (req: Request, res: Response) => {
     }
 
     res.status(200).json({
-      status: "success",
+      success:true,
       data: {
         message: "Order is successfully made",
       },
@@ -75,7 +86,7 @@ const makeOrder = async (req: Request, res: Response) => {
   } catch (error) {
     console.log(error);
     res.status(404).json({
-      status: "fail",
+      success:false,
     });
   }
 };
@@ -91,7 +102,7 @@ const getOrders = async (req: Request, res: Response) => {
       },
     });
     res.status(200).json({
-      status: "success",
+      success:true,
       count: order.length,
       data: {
         order,
@@ -99,7 +110,7 @@ const getOrders = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(404).json({
-      status: "fail",
+      success:false,
     });
   }
 };
@@ -135,7 +146,7 @@ const changeOrderStatus = async (req: Request, res: Response) => {
       },
     });
     res.status(200).json({
-      status: "success",
+      success:true,
       message: "Status is successfully changed",
       data: {
         changedOrder,
@@ -144,7 +155,7 @@ const changeOrderStatus = async (req: Request, res: Response) => {
   } catch (error) {
     console.log(error);
     res.status(404).json({
-      status: "fail",
+      success:false,
     });
   }
 };

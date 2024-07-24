@@ -140,6 +140,9 @@ model OrderItem {
   productId String
   quantity  Int
   price     Float
+  discountedPrice     Float?
+  totalPrice     Float?
+  img     String?
   name      String
   order     Order   @relation(fields: [orderId], references: [id])
   orderId   String

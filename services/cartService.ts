@@ -17,6 +17,7 @@ const getCart = async (userId: string | undefined) => {
     cartItemTotalPrice: number;
     discountedPrice: number | null;
     percentage: number | null;
+    image: string | null;
   }[] = [];
   let totalPrice: number = 0;
   let cartItemTotalPrice: number = 0;
@@ -28,6 +29,7 @@ const getCart = async (userId: string | undefined) => {
       },
       select: {
         id: true,
+        image:true,
         price: true,
         name: true,
         totalAmount: true,
@@ -63,14 +65,12 @@ const getCart = async (userId: string | undefined) => {
         discountedPrice: discountedPrice,
         cartItemTotalPrice,
         percentage:    product.productDiscount != null ?    product.productDiscount.percentage : null,
-
-        
+        image: product.image,
       });
       totalPrice += cartItemTotalPrice;
       cartItemTotalPrice = 0;
     }
   }
-
   return { cartItemsDetails, totalPrice };
 };
 
