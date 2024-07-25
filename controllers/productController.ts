@@ -92,11 +92,11 @@ const getProductById = async (req: Request, res: Response) => {
     });
 
     if (product.productDiscount != null) {
-      product["discountedPrice"] =
-       ( (product.price*1 * (100 - product.productDiscount.percentage*1)) / 100 );
+      product["discountedPrice"] = parseFloat( ( (product.price*1 * (100 - product.productDiscount.percentage*1)) / 100 ).toFixed(2))
+      ;
     }
 
-    product["avgReview"] = result._avg.rating;
+    product["avgReview"] = result._avg.rating != null ? Math.round(result._avg.rating * 100) / 100  : null ;
     product["countReview"] = result._count.rating;
 
 
@@ -169,13 +169,14 @@ const getAllProducts = async (req: Request, res: Response) => {
         },
       });
        
-      productTemp["avgReview"] = review._avg.rating;
+      productTemp["avgReview"] =  review._avg.rating != null ? Math.round(review._avg.rating * 100) / 100  : null ;
+      
       productTemp["countReview"] = review._count.rating;
 
 
         
 
-      productTemp["discountedPrice"] =  productTemp["productDiscount"] != null ?  ((productTemp["price"]*1 * (100 - productTemp["productDiscount"].percentage*1)) / 100)  : null 
+      productTemp["discountedPrice"] =  productTemp["productDiscount"] != null ?  parseFloat(((productTemp["price"]*1 * (100 - productTemp["productDiscount"].percentage*1)) / 100).toFixed(2))    : null 
       returnProducts.push(productTemp)
     }
 
