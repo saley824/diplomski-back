@@ -47,7 +47,7 @@ const makeOrder = async (req: Request, res: Response) => {
       data: {
         id: orderUuid,
         userId: userId,
-        totalPrice: cart.totalPrice,
+        totalPrice: cart.totalPriceRounded,
 
       },
     });
@@ -92,13 +92,13 @@ const makeOrder = async (req: Request, res: Response) => {
 };
 
 const getOrders = async (req: Request, res: Response) => {
-  const body = req.body as orderDto;
+  const {userId, status} = req.query;
 
   try {
     const order = await prisma.order.findMany({
       where: {
-        userId: body.userId,
-        status: body.orderStatus,
+        userId: userId?.toString(),
+        status: status?.toString() as OrderStatus,
       },
     });
     res.status(200).json({

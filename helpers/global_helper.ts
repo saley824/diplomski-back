@@ -1,7 +1,7 @@
 //TODO
 
 const calculateDiscount = (price: number, discount: number) => {
-  return (price * (100 - discount)) / 100;
+  return getRoundTo2((price * (100 - discount)) / 100);
 };
 
 const getUuid = () => {
@@ -11,6 +11,14 @@ const getUuid = () => {
     return v.toString(16);
   });
 };
+
+const getRoundTo2 = (value: number) => {
+  return Math.round(value*100)/100;
+
+};
+
+
+
 
 // function getUuid = () => {
 //   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
@@ -23,4 +31,5 @@ const getUuid = () => {
 export default {
   calculateDiscount,
   getUuid,
+  getRoundTo2
 };

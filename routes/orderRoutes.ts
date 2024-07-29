@@ -8,7 +8,7 @@ const router = express.Router();
 
 //API POTPIS MORA BITI JEDINSTVEN
 
-router.route("/").get(validate(order), orderController.getOrders);
+router.route("/").get( orderController.getOrders);
 router.post("/createOrder/:userId", orderController.makeOrder);
 router
   .route("/changeStatus")

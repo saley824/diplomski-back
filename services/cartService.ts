@@ -6,6 +6,10 @@ const getCart = async (userId: string | undefined) => {
     where: {
       userId,
     },
+
+    orderBy:{
+      createdAt:"asc",
+    }
   });
 
   const cartItemsDetails: {
@@ -46,14 +50,14 @@ const getCart = async (userId: string | undefined) => {
       let discountedPrice: number | null =
         product.productDiscount != null
           ? globalHelper.calculateDiscount(
-              product.price,
+               product.price,
               product.productDiscount.percentage
             )
           : null;
       if (discountedPrice != null) {
-        cartItemTotalPrice += discountedPrice * item.quantity;
+        cartItemTotalPrice += globalHelper.getRoundTo2( discountedPrice * item.quantity);
       } else {
-        cartItemTotalPrice += product.price * item.quantity;
+        cartItemTotalPrice += globalHelper.getRoundTo2(product.price * item.quantity);
       }
 
       cartItemsDetails.push({
@@ -71,7 +75,9 @@ const getCart = async (userId: string | undefined) => {
       cartItemTotalPrice = 0;
     }
   }
-  return { cartItemsDetails, totalPrice };
+
+ let totalPriceRounded: number = globalHelper.getRoundTo2(totalPrice);
+  return { cartItemsDetails,  totalPriceRounded};
 };
 
 export default {

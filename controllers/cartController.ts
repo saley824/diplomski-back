@@ -13,12 +13,13 @@ const getCart = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success:true,
-     
       data: {
         count: cart.cartItemsDetails.length,
-        totalPrice: cart.totalPrice,
+        totalPrice: cart.totalPriceRounded,
         cartItemsDetails: cart.cartItemsDetails,
       },
+
+
     });
   } catch (error) {
     res.status(404).json({
