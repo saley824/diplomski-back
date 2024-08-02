@@ -17,7 +17,7 @@ const makeOrder = async (req: Request, res: Response) => {
     for (let index = 0; index < cart.cartItemsDetails.length; index++) {
       const cartItem = cart.cartItemsDetails[index];
       if (cartItem.quantity > cartItem.totalAmount) {
-        res.status(200).json({
+        res.status(400).json({
           success:false,
           data: {
             message: "There aren't enough quantity of product " + cartItem.name,
@@ -77,6 +77,10 @@ const makeOrder = async (req: Request, res: Response) => {
       });
     }
 
+
+    await prisma.cart.deleteMany();
+    
+
     res.status(200).json({
       success:true,
       data: {
@@ -91,7 +95,30 @@ const makeOrder = async (req: Request, res: Response) => {
   }
 };
 
-const getOrders = async (req: Request, res: Response) => {
+const getOrdersById = async (req: Request, res: Response) => {
+  const {userId, status} = req.query;
+
+  try {
+    const order = await prisma.order.findMany({
+      where: {
+        userId: userId?.toString(),
+        status: status?.toString() as OrderStatus,
+      },
+    });
+    res.status(200).json({
+      success:true,
+      count: order.length,
+      data: {
+        order,
+      },
+    });
+  } catch (error) {
+    res.status(404).json({
+      success:false,
+    });
+  }
+};
+const getAllOrders = async (req: Request, res: Response) => {
   const {userId, status} = req.query;
 
   try {
@@ -159,8 +186,34 @@ const changeOrderStatus = async (req: Request, res: Response) => {
     });
   }
 };
+
+
+const getOrderItems = async (req: Request, res: Response) => {
+  const orderId = req.params.orderId;
+
+  try {
+    const orderItems = await prisma.orderItem.findMany({
+      where: {
+        orderId:orderId
+      },
+    });
+    res.status(200).json({
+      success: true,
+    
+      count: orderItems.length,
+      data: {
+        orderItems,
+      },
+    });
+  } catch (error) {
+    res.status(404).json({
+      success: false
+    });
+  }
+};
 export default {
   makeOrder,
-  getOrders,
+   getOrdersById,
   changeOrderStatus,
+  getOrderItems
 };
