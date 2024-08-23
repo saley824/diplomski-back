@@ -17,7 +17,7 @@ router.post("/signUp", validate(userSchemaCreate), authController.addUser);
 router.post("/login", validate(loginSchema), authController.login);
 
 //ADDRESS
-router.get("/address", userController.getUserAddressById);
+router.get("/address/:userId", userController.getUserAddressById);
 router.post(
   "/addAddress",
   validate(addressSchema),

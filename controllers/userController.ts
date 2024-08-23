@@ -9,7 +9,7 @@ const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await prisma.user.findMany({});
     res.status(200).json({
-      status: "success",
+       success: true,
       count: users.length,
       data: {
         users,
@@ -17,7 +17,7 @@ const getUsers = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(404).json({
-      status: "fail",
+      success: false,
     });
   }
 };
@@ -47,7 +47,7 @@ const getUserInfo = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(404).json({
-      status: "fail",
+      success: false,
     });
   }
 };
@@ -66,14 +66,14 @@ const updateUserInfo = async (req: Request, res: Response) => {
       }
     });
     res.status(200).json({
-      status: "success",
+      success: true,
       data: {
         user,
       },
     });
   } catch (error) {
     res.status(404).json({
-      status: "fail",
+      success: false,
     });
   }
 };
@@ -86,13 +86,13 @@ const addNewAddress = async (req: Request, res: Response) => {
     });
 
     res.status(200).json({
-      status: "success",
+       success: true,
       data: addressBody,
     });
   } catch (error) {
     console.log(error);
     res.status(404).json({
-      status: "fail",
+      success: false,
     });
   }
 };
@@ -108,18 +108,18 @@ const updateAddress = async (req: Request, res: Response) => {
     });
 
     res.status(200).json({
-      status: "success",
+       success: true,
       data: addressBody,
     });
   } catch (error) {
     console.log(error);
     res.status(404).json({
-      status: "fail",
+      success: false,
     });
   }
 };
 const getUserAddressById = async (req: Request, res: Response) => {
-  const { userId } = req.body;
+  const { userId } = req.params;
   try {
     const address = await prisma.userAddress.findFirst({
       where: {
@@ -128,13 +128,13 @@ const getUserAddressById = async (req: Request, res: Response) => {
     });
 
     res.status(200).json({
-      status: "success",
+       success: true,
       data: address,
     });
   } catch (error) {
     console.log(error);
     res.status(404).json({
-      status: "fail",
+      success: false,
     });
   }
 };
