@@ -41,7 +41,7 @@ model User {
   Cart                 Cart[]
   Order                Order[]
   Reviews              Review[]
-  UserAddress          UserAddress?
+  address          UserAddress?
 
 }
 

@@ -104,6 +104,18 @@ const getOrdersById = async (req: Request, res: Response) => {
         userId: userId?.toString(),
         status: status?.toString() as OrderStatus,
       },
+      include:{
+        user:{
+          select:{
+            id:true,
+            name: true,
+            lastName:true,
+            username:true,
+            address: true,
+            email: true,
+          }
+        }
+      }
     });
     res.status(200).json({
       success:true,
@@ -196,6 +208,7 @@ const getOrderItems = async (req: Request, res: Response) => {
       where: {
         orderId:orderId
       },
+  
     });
     res.status(200).json({
       success: true,

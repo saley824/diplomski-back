@@ -115,6 +115,7 @@ const forgotPassword = async (req: Request, res: Response) => {
         success: false,
         message: "Not find user",
       });
+      return;
     }
     const { resetToken, hashResetToken, tokenExpires } =
       userService.createPasswordResetToken();

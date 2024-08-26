@@ -75,6 +75,9 @@ const getProductsByFilters = async (options: {
     skip: skip,
     take: perPage + 1,
     where: {
+      totalAmount:{
+        gt: 0
+      },
       name: searchTerm
         ? {
             contains: searchTerm,
