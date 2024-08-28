@@ -181,10 +181,12 @@ const getAllProducts = async (req: Request, res: Response) => {
     }
 
     res.status(200).json({
-      hasNext: hasNext,
+      
       success:true,
-      count: products.length,
+   
       data: {
+        hasNext: hasNext,
+        count: products.length,
        products: returnProducts,
       },
     });
