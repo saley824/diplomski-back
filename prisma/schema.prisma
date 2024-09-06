@@ -103,9 +103,9 @@ model ProductPriceHistory {
 model Category {
   id              String     @id @default(uuid())
   name            String
-  SuperCategory   Category?  @relation("SubCategories", fields: [superCategoryId], references: [id])
+  superCategory   Category?  @relation("SubCategories", fields: [superCategoryId], references: [id])
   superCategoryId String?
-  SubCategories   Category[] @relation("SubCategories")
+  subCategories   Category[] @relation("SubCategories")
   Product         Product[]
 }
 

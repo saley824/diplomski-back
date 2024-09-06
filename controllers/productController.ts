@@ -52,13 +52,9 @@ const getProductById = async (req: Request, res: Response) => {
         id: req.params.id,
       },
       include: {
-        productDiscount: {
-          select: {
-            percentage: true,
-            from: true,
-            to: true,
-          },
-        },
+     
+        productDiscount:true
+        ,
         productPriceHistory: {
           select: {
             newPrice: true,
@@ -66,9 +62,12 @@ const getProductById = async (req: Request, res: Response) => {
           },
         },
         category:{
+        
           select:{
             name:true,
             id:true,
+            superCategory:true,
+           
           }
 
         }
@@ -92,7 +91,15 @@ const getProductById = async (req: Request, res: Response) => {
     });
 
     if (product.productDiscount != null) {
-      product["discountedPrice"] = parseFloat( ( (product.price*1 * (100 - product.productDiscount.percentage*1)) / 100 ).toFixed(2))
+      let success: boolean = productService.checkIfProductHasDiscount(product.productDiscount);
+      if(!success){
+        product["productDiscount"].hasDiscount = false;
+          }
+           
+            product["discountedPrice"] = parseFloat( ( (product.price*1 * (100 - product.productDiscount.percentage*1)) / 100 ).toFixed(2))
+          
+   
+      
       ;
     }
 
@@ -174,9 +181,22 @@ const getAllProducts = async (req: Request, res: Response) => {
       productTemp["countReview"] = review._count.rating;
 
 
-        
+    if (productTemp["productDiscount"] != null)
+    {
 
-      productTemp["discountedPrice"] =  productTemp["productDiscount"] != null ?  parseFloat(((productTemp["price"]*1 * (100 - productTemp["productDiscount"].percentage*1)) / 100).toFixed(2))    : null 
+       let success: boolean = productService.checkIfProductHasDiscount(productTemp.productDiscount);
+
+       if(!success){
+        productTemp["productDiscount"] = null;
+        productTemp["discountedPrice"] = null;
+       }
+       else {
+        productTemp["discountedPrice"] =  productTemp["productDiscount"] != null ?  parseFloat(((productTemp["price"]*1 * (100 - productTemp["productDiscount"].percentage*1)) / 100).toFixed(2))    : null 
+
+       }
+
+    }
+
       returnProducts.push(productTemp)
     }
 
@@ -270,6 +290,11 @@ const updateProductById = async (req: Request, res: Response) => {
     });
   }
 };
+const test = ( )=> {
+  return true;
+};
+
+
 
 //DELETE
 
@@ -344,7 +369,7 @@ const deleteProductById = async (req: Request, res: Response) => {
     console.log(error);
     res.status(404).json({
       success:false,
-      status: "fail",
+     
     });
   }
 };
